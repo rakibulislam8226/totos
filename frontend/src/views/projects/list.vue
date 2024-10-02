@@ -1,11 +1,13 @@
 <template>
   <div>
-    <h2 class="text-3xl hover:font-light flex justify-center">Projects list</h2>
+    <h2 class="text-3xl mt-2 hover:font-light flex justify-center">
+      Projects list
+    </h2>
     <div class="p-5">
       <div class="flex flex-wrap justify-center gap-5">
         <div
           v-for="item in items"
-          class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700"
+          class="max-w-sm p-6 mt-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700"
         >
           <div class="flex justify-between">
             <h5
