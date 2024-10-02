@@ -6,4 +6,6 @@ urlpatterns = [
     path("api-auth", include("rest_framework.urls")),
     # projects
     path("projects", include("projectio.urls")),
+    # contact
+    path("contact", include("contactio.urls")),
 ]
