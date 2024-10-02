@@ -21,8 +21,11 @@
             id="name"
             v-model="item.name"
             class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
           />
+          <!-- error message -->
+          <div class="text-red-500 text-sm" v-if="errors.name">
+            {{ errors.name }}
+          </div>
         </div>
         <div class="mb-4">
           <label
@@ -35,7 +38,6 @@
             id="description"
             v-model="item.description"
             class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
           ></textarea>
           <div class="mb-4">
             <label for="status" class="block text-sm font-medium text-gray-700"
@@ -45,14 +47,14 @@
               id="status"
               v-model="item.status"
               class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
             >
-              <option value="PENDING">Pending</option>
-              <option value="ACTIVE">Active</option>
-              <option value="DEACTIVATED">Deactivated</option>
-              <option value="COMPLETED">Completed</option>
-              <option value="CANCELLED">Cancelled</option>
-              <option value="REMOVED">Removed</option>
+              <option
+                v-for="{ value, label } in statuses"
+                :disabled="value === item.status"
+                :value="value"
+              >
+                {{ label }}
+              </option>
             </select>
           </div>
           <div class="mb-4">
@@ -66,8 +68,11 @@
               id="start_date"
               v-model="item.start_date"
               class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
             />
+            <!-- error message -->
+            <div class="text-red-500 text-sm" v-if="errors.start_date">
+              {{ errors.start_date }}
+            </div>
           </div>
 
           <div class="mb-4">
@@ -81,7 +86,6 @@
               id="end_date"
               v-model="item.end_date"
               class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              required
             />
           </div>
         </div>
@@ -108,6 +112,20 @@ const item = ref([]);
 const route = useRoute();
 const router = useRouter();
 
+const errors = ref({
+  name: "",
+  start_date: "",
+});
+
+const statuses = ref([
+  { value: "PENDING", label: "Pending" },
+  { value: "ACTIVE", label: "Active" },
+  { value: "DEACTIVATED", label: "Deactivated" },
+  { value: "COMPLETED", label: "Completed" },
+  { value: "CANCELLED", label: "Cancelled" },
+  { value: "REMOVED", label: "Removed" },
+]);
+
 // Get project details
 const fetchItems = async () => {
   try {
@@ -122,11 +140,21 @@ fetchItems();
 
 // Update project
 const updateProject = async () => {
+  // error handling
+  errors.value = {};
+  if (item.value.name.length < 3) {
+    errors.value.name = "Name must be at least 3 characters.";
+    return;
+  } else if (!item.value.start_date) {
+    errors.value.start_date = "Start date is required.";
+    return;
+  }
+
+  // update project
   try {
     const uid = route.params.uid;
     await axios.patch("http://localhost:8000/projects/" + uid, item.value);
     iziToast.success({
-      title: "Success",
       message: "Project updated successfully",
     });
     router.push("/projects");

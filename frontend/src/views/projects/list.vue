@@ -1,13 +1,17 @@
 <template>
   <div>
-    <h2 class="text-3xl mt-2 hover:font-light flex justify-center">
-      Projects list
-    </h2>
+    <h2 class="text-3xl mt-2 flex justify-center">Projects list</h2>
+    <RouterLink
+      to="/projects/create"
+      class="flex justify-center text-sm text-red-900"
+    >
+      Create project
+    </RouterLink>
     <div class="p-5">
       <div class="flex flex-wrap justify-center gap-5">
         <div
           v-for="item in items"
-          class="max-w-sm p-6 mt-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700"
+          class="max-w-sm p-6 mt-2 w-[400px] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700"
         >
           <div class="flex justify-between">
             <h5
@@ -21,7 +25,7 @@
             {{ item.status }}
           </p>
           <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            {{ item.description }}
+            {{ textLimit(item.description, 80) }}
           </p>
           <div class="flex justify-between">
             <p class="mb-3 text-sm text-gray-700 dark:text-gray-400">
@@ -33,7 +37,7 @@
           </div>
           <RouterLink
             :to="`/projects/${item.uid}`"
-            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            class="inline-flex items-center px-3 py-2 mb-1 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Read more
             <svg
@@ -75,4 +79,8 @@ const fetchItems = async () => {
   }
 };
 fetchItems();
+
+const textLimit = (text, limit = 50) => {
+  return text.length > limit ? text.substring(0, limit) + "..." : text;
+};
 </script>
