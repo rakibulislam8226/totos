@@ -1,8 +1,11 @@
 <template>
   <div>
     <p class="text-3xl mt-2 flex justify-center">Projects create</p>
-    <div class="p-5">
-      <form @submit.prevent="createProject" class="max-w-md mx-auto">
+    <div class="p-5 flex justify-center">
+      <form
+        @submit.prevent="createProject"
+        class="min-w-[600px] shadow-md p-5 hover:shadow-lg bg-gray-50 rounded-lg"
+      >
         <div class="mb-4">
           <label for="name" class="block text-sm font-medium text-gray-700"
             >Name</label
