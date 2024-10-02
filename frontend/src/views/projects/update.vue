@@ -3,15 +3,12 @@
     <h2 class="text-3xl hover:font-light flex justify-center">
       Projects Details
     </h2>
-    <RouterLink
-      to="/projects"
-      class="text-sm hover:font-light flex justify-center"
-    >
-      Projects List
-    </RouterLink>
 
-    <div class="p-5">
-      <form @submit.prevent="updateProject" class="max-w-md mx-auto">
+    <div class="p-5 flex justify-center">
+      <form
+        @submit.prevent="updateProject"
+        class="w-[600px] shadow-md p-5 hover:shadow-lg bg-gray-50 rounded-lg"
+      >
         <div class="mb-4">
           <label for="name" class="block text-sm font-medium text-gray-700"
             >Name</label
@@ -38,6 +35,7 @@
             id="description"
             v-model="item.description"
             class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            rows="5"
           ></textarea>
           <div class="mb-4">
             <label for="status" class="block text-sm font-medium text-gray-700"
@@ -49,7 +47,7 @@
               class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             >
               <option
-                v-for="{ value, label } in statuses"
+                v-for="{ value, label } in projectStatus"
                 :disabled="value === item.status"
                 :value="value"
               >
@@ -107,36 +105,18 @@ import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import iziToast from "@/plugins/iziToast";
-const item = ref([]);
+
+import projectStatus from "@/constants/projectStatus";
 
 const route = useRoute();
 const router = useRouter();
+
+const item = ref([]);
 
 const errors = ref({
   name: "",
   start_date: "",
 });
-
-const statuses = ref([
-  { value: "PENDING", label: "Pending" },
-  { value: "ACTIVE", label: "Active" },
-  { value: "DEACTIVATED", label: "Deactivated" },
-  { value: "COMPLETED", label: "Completed" },
-  { value: "CANCELLED", label: "Cancelled" },
-  { value: "REMOVED", label: "Removed" },
-]);
-
-// Get project details
-const fetchItems = async () => {
-  try {
-    const uid = route.params.uid;
-    const response = await axios.get("http://localhost:8000/projects/" + uid);
-    item.value = response.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-fetchItems();
 
 // Update project
 const updateProject = async () => {
@@ -162,4 +142,16 @@ const updateProject = async () => {
     console.log(error);
   }
 };
+
+// Get project details
+const fetchItems = async () => {
+  try {
+    const uid = route.params.uid;
+    const response = await axios.get("http://localhost:8000/projects/" + uid);
+    item.value = response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+fetchItems();
 </script>

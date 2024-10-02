@@ -4,7 +4,7 @@
     <div class="p-5 flex justify-center">
       <form
         @submit.prevent="createProject"
-        class="min-w-[600px] shadow-md p-5 hover:shadow-lg bg-gray-50 rounded-lg"
+        class="w-[600px] shadow-md p-5 hover:shadow-lg bg-gray-50 rounded-lg"
       >
         <div class="mb-4">
           <label for="name" class="block text-sm font-medium text-gray-700"
@@ -42,12 +42,9 @@
               v-model="item.status"
               class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             >
-              <option value="PENDING">Pending</option>
-              <option value="ACTIVE">Active</option>
-              <option value="DEACTIVATED">Deactivated</option>
-              <option value="COMPLETED">Completed</option>
-              <option value="CANCELLED">Cancelled</option>
-              <option value="REMOVED">Removed</option>
+              <option v-for="{ value, label } in projectStatus" :value="value">
+                {{ label }}
+              </option>
             </select>
           </div>
           <div class="mb-4">
@@ -100,6 +97,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import iziToast from "@/plugins/iziToast";
+
+import projectStatus from "@/constants/projectStatus";
 
 const router = useRouter();
 
