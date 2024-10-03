@@ -94,28 +94,42 @@ const errors = ref({
 });
 
 const createContact = async () => {
-  // create contact
   try {
+    // initialize errors to empty
+    errors.value = {
+      subject: "",
+      email: "",
+      message: "",
+    };
+
     await axios.post("http://localhost:8000/contact", contact.value);
     iziToast.success({
       message: "Form submitted successfully",
     });
+
+    // clear form fields
     contact.value = {
       subject: "",
       email: "",
       message: "",
     };
-    errors.value = {
-      subject: "",
-      email: "",
-      message: "",
-    };
+
+    // set errors if any
   } catch (error) {
-    errors.value = {
-      subject: error.response.data.subject[0],
-      email: error.response.data.email[0],
-      message: error.response.data.message[0],
-    };
+    Object.keys(errors.value).forEach((key) => {
+      if (error.response.data[key]) {
+        errors.value[key] = error.response.data[key][0];
+      }
+    });
   }
+
+  // alternatively, following code can be used to set errors
+  // } catch (error) {
+  //   errors.value = {
+  //     subject: error.response.data?.subject?.at(0),
+  //     email: error.response.data?.email?.at(0),
+  //     message: error.response.data?.message?.at(0),
+  //   };
+  // }
 };
 </script>
