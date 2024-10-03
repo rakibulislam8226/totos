@@ -7,7 +7,7 @@ from .models import Contact
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ("email", "subject", "message", "created_at")
+    list_display = ("email", "subject", "created_at")
     date_hierarchy = "created_at"
     ordering = ("-created_at",)
     readonly_fields = ("uid", "created_at", "updated_at")
