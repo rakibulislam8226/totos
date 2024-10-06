@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework import generics, permissions, status, views
+from rest_framework.response import Response
 
-# Create your views here.
+from .serializers import UserSerializer
+
+
+class UserAuthView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
