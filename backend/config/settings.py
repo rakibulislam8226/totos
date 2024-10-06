@@ -39,8 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "projectio",
+    "authentications",
     "contactio",
     "corsheaders",
+    "rest_framework_simplejwt",
+    "phonenumber_field",
+    "versatileimagefield",
 ]
 
 MIDDLEWARE = [
@@ -53,6 +57,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+AUTH_USER_MODEL = "authentications.User"
 
 ROOT_URLCONF = "config.urls"
 
@@ -136,3 +142,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
