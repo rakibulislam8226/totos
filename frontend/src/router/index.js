@@ -4,6 +4,7 @@ import ProjectsRoutes from './projects/routes';
 import AboutRoutes from './about/routes';
 import ContactRoutes from './contact/routes';
 import ServiceRoutes from './service/routes';
+import AuthRoutes from './authentications/routes';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,11 @@ const router = createRouter({
     {
       path: '/service',
       children: ServiceRoutes
+    },
+    // auth routes
+    {
+      path: '/auth',
+      children: AuthRoutes
     },
   ]
 })
