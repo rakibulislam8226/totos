@@ -21,8 +21,11 @@ class User(AbstractUser, BaseModelWithUID, PermissionsMixin):
         "Image",
         upload_to=get_user_media_path_prefix,
         blank=True,
+        null=True,
     )
-    type = models.CharField(max_length=20, choices=UserType.choices)
+    type = models.CharField(
+        max_length=20, choices=UserType.choices, default=UserType.UNKNOWN
+    )
     status = models.CharField(
         max_length=20,
         choices=UserStatus.choices,
