@@ -15,13 +15,36 @@
         >
       </RouterLink>
       <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-        <RouterLink
-          type="button"
-          to="/projects/create"
-          class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-        >
-          Create Project
-        </RouterLink>
+        <div v-if="authStore.isLoggedIn" class="flex flex-wrap gap-5">
+          <RouterLink
+            type="button"
+            to="/projects/create"
+            class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+          >
+            Create Project
+          </RouterLink>
+          <button
+            type="button"
+            @click="logout"
+            class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+          >
+            Logout
+          </button>
+        </div>
+        <div v-else class="flex flex-wrap gap-5">
+          <RouterLink
+            to="/auth/login"
+            class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+          >
+            Sign In
+          </RouterLink>
+          <RouterLink
+            to="/auth/register"
+            class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+          >
+            Sign Up
+          </RouterLink>
+        </div>
         <button
           data-collapse-toggle="navbar-sticky"
           type="button"
@@ -47,6 +70,7 @@
           </svg>
         </button>
       </div>
+
       <div
         class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
         id="navbar-sticky"
@@ -69,7 +93,12 @@
 </template>
 
 <script setup>
+import { useAuthStore } from "@/stores/auth";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const authStore = useAuthStore();
 
 const menu = ref([
   { name: "Home", route: "/" },
@@ -78,4 +107,9 @@ const menu = ref([
   { name: "Service", route: "/service" },
   { name: "Contact", route: "/contact" },
 ]);
+
+const logout = () => {
+  authStore.logout();
+  router.push({ path: "/auth/login" });
+};
 </script>

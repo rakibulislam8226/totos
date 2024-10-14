@@ -140,7 +140,7 @@
         </div>
         <div class="relative z-0 w-full mb-5 group">
           <input
-            type="text"
+            type="number"
             id="weight"
             v-model="user.weight"
             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -238,6 +238,8 @@ import iziToast from "@/plugins/iziToast";
 
 import { userGender, userBloodGroup } from "@/constants/authConstants";
 
+const router = useRouter();
+
 const errors = ref({
   password: "",
   confirm_password: "",
@@ -283,6 +285,7 @@ const registerUser = async () => {
     };
 
     await axios.post("http://127.0.0.1:8000/auth/register", user.value);
+    router.push("/auth/login");
     iziToast.success({
       message: "User Registration Successfully",
     });

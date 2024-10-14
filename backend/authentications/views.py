@@ -10,7 +10,7 @@ class UserAuthView(generics.CreateAPIView):
 
 class UserMeListView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get_object(self):
         return self.request.user if self.request.user.is_authenticated else None
