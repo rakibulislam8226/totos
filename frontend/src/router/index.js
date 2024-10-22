@@ -12,12 +12,15 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      children: HomeRoutes,
-    },
-    {
-      path: "/projects",
-      component: () => import("@/views/projects/layout.vue"),
-      children: ProjectsRoutes,
+      children: [
+        ...HomeRoutes,
+        {
+          path: "/projects",
+          component: () => import("@/views/projects/layout.vue"),
+          children: ProjectsRoutes,
+        },
+        // other routes which needes authentication
+      ],
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         if (!authStore.isLoggedIn) {
