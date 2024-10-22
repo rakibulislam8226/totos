@@ -154,17 +154,28 @@
         </div>
       </div>
       <div class="relative z-0 w-full mb-5 group">
-        <input
-          type="file"
-          id="image"
-          class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-          placeholder=" "
-        />
-        <label
-          for="image"
-          class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+        <label for="" class="text-sm text-gray-500 dark:text-gray-400"
           >Image</label
         >
+        <input
+          type="file"
+          @change="user.image = $event.target.files[0]"
+          id="image"
+          class="hidden"
+        />
+        <label for="image" class="flex gap-x-5" role="button">
+          <div class="flex items-center gap-x-3">
+            <img src="@/assets/icons/upload.svg" alt="" />
+            <span v-if="imagePreviewUrl" class="font-bold">File Choosen</span>
+            <span v-else class="text-sm font-bold">Choose File</span>
+          </div>
+          <img
+            v-if="imagePreviewUrl"
+            :src="imagePreviewUrl"
+            class="h-[50px] rounded-full"
+            alt=""
+          />
+        </label>
       </div>
 
       <div class="grid md:grid-cols-3 md:gap-2">
@@ -180,7 +191,7 @@
             </option>
           </select>
           <label
-            for="height"
+            for="gender"
             class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
             >Gender</label
           >
@@ -230,7 +241,7 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
@@ -240,13 +251,15 @@ import { userGender, userBloodGroup } from "@/constants/authConstants";
 
 const router = useRouter();
 
-const errors = ref({
+const ERRORS = {
   password: "",
   confirm_password: "",
   phone: "",
-});
+};
 
-const user = ref({
+const errors = ref({ ...ERRORS });
+
+const USER = {
   email: "",
   phone: "",
   first_name: "",
@@ -256,13 +269,21 @@ const user = ref({
   nid: null,
   gender: "UNKNOWN",
   date_of_birth: null,
-  height: null,
-  weight: null,
+  height: "",
+  weight: "",
   type: "UNKNOWN",
   blood_group: "NOT_SET",
   status: "ACTIVE",
-  // image: "",
+  image: null,
+};
+
+const imagePreviewUrl = computed(() => {
+  if (user.value.image instanceof File) {
+    return URL.createObjectURL(user.value.image);
+  }
 });
+
+const user = ref({ ...USER });
 
 // validate password and confirm password
 watchEffect(() => {
@@ -277,37 +298,20 @@ watchEffect(() => {
 // register user
 const registerUser = async () => {
   try {
-    // initialize errors to empty
-    errors.value = {
-      password: "",
-      confirm_password: "",
-      phone: "",
-    };
+    errors.value = { ...ERRORS };
 
-    await axios.post("http://127.0.0.1:8000/auth/register", user.value);
+    const formData = new FormData();
+
+    Object.keys(user.value).forEach((key) => {
+      formData.append(key, user.value[key]);
+    });
+
+    await axios.post("http://127.0.0.1:8000/auth/register", formData);
     router.push("/auth/login");
     iziToast.success({
       message: "User Registration Successfully",
     });
-
-    // clear form fields
-    user.value = {
-      email: "",
-      phone: "",
-      first_name: "",
-      last_name: "",
-      password: "",
-      confirm_password: "",
-      nid: "",
-      gender: "UNKNOWN",
-      date_of_birth: "",
-      height: "",
-      weight: "",
-      blood_group: "NOT_SET",
-      // image: null,
-    };
-
-    // set errors if any
+    user.value = { ...USER };
   } catch (error) {
     Object.keys(errors.value).forEach((key) => {
       if (error.response.data[key]) {
